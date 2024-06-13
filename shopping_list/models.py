@@ -1,12 +1,17 @@
-from django.db import models
-
 import uuid
 
+from django.contrib.auth.models import AbstractUser  # NEW
+from django.db import models
+from django.conf import settings
 # Create your models here.
+class User(AbstractUser):
+    pass
+
 class ShoppingList(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200)
-    members = models.ManyToManyField("auth.User")
+    members = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    last_interaction = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name

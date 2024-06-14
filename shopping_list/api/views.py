@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from shopping_list.models import ShoppingList, ShoppingItem
 from shopping_list.api.pagination import LargerResultsSetPagination
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema
 
 
 
@@ -52,6 +53,10 @@ class ShoppingItemDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class ShoppingListAddMembers(APIView):
     permission_classes = [ShoppingListMembersOnly]
+    @extend_schema(
+        request=AddMemberSerializer,
+        responses=AddMemberSerializer
+    )
 
     def put(self, request, pk, format=None):
         shopping_list = ShoppingList.objects.get(pk=pk)
@@ -66,6 +71,10 @@ class ShoppingListAddMembers(APIView):
     
 class ShoppingListRemoveMembers(APIView):
     permission_classes = [ShoppingListMembersOnly]
+    @extend_schema(
+        request=RemoveMemberSerializer,
+        responses=RemoveMemberSerializer
+    )
 
     def put(self, request, pk, format=None):
         shopping_list = ShoppingList.objects.get(pk=pk)

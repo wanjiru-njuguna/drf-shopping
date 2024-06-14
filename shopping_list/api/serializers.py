@@ -2,7 +2,9 @@ from rest_framework import serializers
 
 from shopping_list.models import ShoppingItem, ShoppingList
 from shopping_list.models import User
-class UserSerializer(serializers.ModelSerializer):  # NEW!
+from typing import List, TypedDict
+
+class UserSerializer(serializers.ModelSerializer):  
     class Meta:
         model = User
         fields = ["id", "username"]
@@ -26,6 +28,9 @@ class ShoppingItemSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("There's already this item on the list")
 
         return super(ShoppingItemSerializer, self).create(validated_data)
+    
+class UnpurchasedItem(TypedDict): 
+    name: str
 
 class ShoppingListSerializer(serializers.ModelSerializer):
     members = UserSerializer(many=True, read_only=True)
@@ -35,7 +40,7 @@ class ShoppingListSerializer(serializers.ModelSerializer):
         model = ShoppingList
         fields = ["id", "name", "unpurchased_items", "members"]
 
-    def get_unpurchased_items(self, obj):
+    def get_unpurchased_items(self, obj) -> List[UnpurchasedItem]: 
         return [{"name": shopping_item.name} for shopping_item in obj.shopping_items.filter(purchased=False)][:3]
     
 class AddMemberSerializer(serializers.ModelSerializer):

@@ -1,11 +1,14 @@
 import uuid
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser  # NEW
 from django.db import models
-from django.conf import settings
+
+
 # Create your models here.
 class User(AbstractUser):
     pass
+
 
 class ShoppingList(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -15,12 +18,15 @@ class ShoppingList(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+
 class ShoppingItem(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.CharField(max_length=100)
     purchased = models.BooleanField()
-    shopping_list = models.ForeignKey(ShoppingList, on_delete=models.CASCADE, related_name="shopping_items")
+    shopping_list = models.ForeignKey(
+        ShoppingList, on_delete=models.CASCADE, related_name="shopping_items"
+    )
 
     def __str__(self):
         return f"{self.name}"

@@ -1,7 +1,7 @@
 import pytest
-from shopping_list.models import User
 from rest_framework.test import APIClient
-from shopping_list.models import ShoppingItem, ShoppingList
+
+from shopping_list.models import ShoppingItem, ShoppingList, User
 
 
 @pytest.fixture(scope="session")
@@ -9,15 +9,21 @@ def create_shopping_item():
     def _create_shopping_item(name, user):
         shopping_list = ShoppingList.objects.create(name="My shopping list")
         shopping_list.members.add(user)
-        shopping_item = ShoppingItem.objects.create(name=name, purchased=False, shopping_list=shopping_list)
+        shopping_item = ShoppingItem.objects.create(
+            name=name, purchased=False, shopping_list=shopping_list
+        )
 
         return shopping_item
 
     return _create_shopping_item
+
+
 @pytest.fixture(scope="session")
 def create_user():
     def _create_user():
-        return User.objects.create_user("wanjiru", "wanjirunjuguna18@gmail.com", "something")
+        return User.objects.create_user(
+            "wanjiru", "wanjirunjuguna18@gmail.com", "something"
+        )
 
     return _create_user
 
@@ -31,6 +37,7 @@ def create_authenticated_client():
         return client
 
     return _create_authenticated_client
+
 
 @pytest.fixture(scope="session")
 def create_shopping_list():
